@@ -26,7 +26,7 @@ public class Main {
                 .filter(Main::isImage)) {
             files.forEach(f -> {
                 imageCounter.incrementAndGet();
-                createThumbnail(f, thumbnailsDirectory.resolve(f.getFileName()));
+                new imageMagick().createThumbnail(f, thumbnailsDirectory.resolve(f.getFileName()));
             });
         }
         long ended = System.currentTimeMillis();
@@ -42,22 +42,6 @@ public class Main {
         }
     }
 
-    private static boolean createThumbnail(Path source, Path target) {
-        try {
-            System.out.println("Creating thumbnail for: " + target.normalize().toAbsolutePath().toString());
-            List<String> command = List.of("magick", "convert", "-resize", "300x", source.normalize().toAbsolutePath().toString(), target.normalize().toAbsolutePath().toString());
-            ProcessBuilder builder = new ProcessBuilder(command);
-            builder.inheritIO();
-            Process process = builder.start();
-            boolean b = process.waitFor(3, TimeUnit.SECONDS);
-            if (!b) {
-                process.destroy();
-            }
-            return b;
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+
 
 }
